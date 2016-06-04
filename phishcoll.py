@@ -18,14 +18,16 @@ cur.execute('''
 CREATE TABLE Phishing_Campaigns (Url TEXT, Country TEXT, Target TEXT, Phishtank_submission TEXT, Verification_time TEXT)''')
 
 #Open connection to the phishtank url to retrieve the file and read into memory
+fhand = open("verified_online.json")
+#fhand = open("test.json")
 
-fhand = urllib.urlopen('http://data.phishtank.com/data/75dad665719988230016dcb581a4df31ff627134d170109fc16947af583b3eda/online-valid.json')
-print fhand.getcode()
-if (fhand.getcode() == 200):
-    data = fhand.read()
-else:
-    print 'Received an error from server, cannot retrieve results ' + str(fhand.getcode())
-
+#fhand = urllib.urlopen('http://data.phishtank.com/data/75dad665719988230016dcb581a4df31ff627134d170109fc16947af583b3eda/online-valid.json')
+#print fhand.getcode()
+#if (fhand.getcode() == 200):
+#    data = fhand.read()
+#else:
+#    print 'Received an error from server, cannot retrieve results ' + str(fhand.getcode())
+data = fhand.read()
 print len(data)
 
 try:
@@ -33,20 +35,20 @@ try:
     print "success"
 except:
     js = None
-
-#run a for loop to run through file and parse out each key valeu pair within the file in this order:
+json.dumps(js, indent = 4)
+#run a for loop to run through file and parse out each key value pair within the file in this order:
     #URL, Country, Target, Phishtank_submission, Verification_time
     
 for line in js:
-    url = line["url"]
-    country = line["details"][0]["country"]
-    target = line["target"]
-    phishsubm = line["submission_time"]
-    verification = line["verification_time"]
+    url = js["url"]
+    country = js["details"][0]["country"]
+    target = js["target"]
+    phishsubm = js["submission_time"]
+    verification = js["verification_time"]
 
     print url, country, target, phishsubm, verification
 
-    cur.execute('''INSERT INTO Url(url) VALUES ( ? )''' )
+    #cur.execute('''INSERT INTO Url(url) VALUES ( ? )''' )
 print "done"
 
 
