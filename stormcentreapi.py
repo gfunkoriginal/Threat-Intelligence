@@ -3,32 +3,34 @@ import urllib
 import json
 import sys
 
-fhand = urllib.urlopen('http://isc.sans.edu/api/getmspatchday/2016-03-08?json')
+fHand = urllib.urlopen('http://isc.sans.edu/api/getmspatchday/2016-01-12?json')
 
-print fhand.getcode()
+print fHand.getcode()
 
-data = fhand.read()
+data = fHand.read()
 
 js = json.loads(data)
 
-threatlist = []
+print json.dumps(js, indent=4)
+
+
+threatList = []
 count = 0
 for record in js["getmspatchday"]:
     threat = record["affected"]
-    threatlist.insert(count, threat)
-    count = count + 1
+    threatList.insert(count, threat)
+    ++count
 
-
+print threatList
 try:
     conn = sqlite3.connect('asset_base2.sqlite')
     cur = conn.cursor()
 except:
     print "error"
-for threat in threatlist:
-    result = cur.execute('''
-    SELECT * FROM * WHERE InstalledApplications = (?)''', threat)
+
+for threat in threatList:
+    result = cur.execute('SELECT * FROM database_servers WHERE InstalledApplications Like (%?%)', (threat, ))
     print result
 
-print json.dumps(js, indent = 4)
-
+#print json.dumps(js, indent = 4)
 
